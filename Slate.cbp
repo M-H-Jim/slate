@@ -65,6 +65,7 @@
 		<Linker>
 			<Add option="-mthreads" />
 		</Linker>
+		<Unit filename="pages.h" />
 		<Unit filename="src/app.cpp" />
 		<Unit filename="src/app.h" />
 		<Unit filename="src/logic/menu/menulogic.cpp" />
@@ -72,6 +73,7 @@
 		<Unit filename="src/mainframe.h" />
 		<Unit filename="src/ui/Branches/branches.cpp" />
 		<Unit filename="src/ui/Branches/branches.h" />
+		<Unit filename="src/ui/Pages/pages.cpp" />
 		<Unit filename="src/ui/menu/menubar.cpp" />
 		<Unit filename="src/ui/menu/menubar.h" />
 		<Unit filename="wx.rc">

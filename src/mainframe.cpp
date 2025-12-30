@@ -1,6 +1,7 @@
 #include "mainframe.h"
 #include "../src/ui/menu/menubar.h"
 #include "../src/ui/branches/branches.h"
+#include "../src/ui/pages/pages.h"
 
 
 #include <wx/splitter.h>
@@ -25,6 +26,10 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title) {
     Branches branches(notebook);
     notebook->AddPage(branches.GetPanel(), "Branches");
     
+    Pages pages(notebook);
+    notebook->AddPage(pages.GetPanel(), "Pages");
+    
+
     
     
     
@@ -32,19 +37,6 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title) {
     
     
     
-    
-    
-//    notebook->AddPage(text1, "Tab 1");
-    
-    
-    
-    
-    
-    
-    
-    
-    wxTextCtrl *text2 = new wxTextCtrl(notebook, wxID_ANY, "Tab 2 contents");
-    notebook->AddPage(text2, "Tab 2");
     wxTextCtrl *text3 = new wxTextCtrl(notebook, wxID_ANY, "Tab 3 contents");
     notebook->AddPage(text3, "Tab 3");
     wxTextCtrl *text4 = new wxTextCtrl(notebook, wxID_ANY, "Tab 4 contents");
