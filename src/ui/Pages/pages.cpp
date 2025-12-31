@@ -24,12 +24,35 @@ Pages::Pages(wxNotebook* notebook) {
     splitPanel2 = new wxPanel(splitterWindow, wxID_ANY);
     
     
+    // Writing space
     
-    splitPanel1Sizer = new wxBoxSizer(wxVERTICAL);
+    richTextCtrl = new wxRichTextCtrl(
+        splitPanel2,
+        wxID_ANY,
+        "",
+        wxDefaultPosition,
+        wxDefaultSize,
+        wxTE_MULTILINE |wxTE_RICH2 | wxTE_PROCESS_TAB
+    );
+    
+
+    
+    
+    
+    
+    
+    
+    
+    splitPanel2Sizer = new wxBoxSizer(wxVERTICAL);
+    splitPanel2Sizer->Add(richTextCtrl, 1, wxEXPAND | wxALL, 5);
     splitPanel2->SetSizer(splitPanel2Sizer);
     
     
     
+    
+    
+    
+    //----------------------------------------
     
     splitterWindow->SplitVertically(splitPanel1, splitPanel2);
     

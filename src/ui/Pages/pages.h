@@ -5,6 +5,7 @@
 #include <wx/splitter.h>
 #include <wx/notebook.h>
 #include <wx/sizer.h>
+#include <wx/richtext/richtextctrl.h>
 
 /* This Notes/Summary/Personal knowledge Base in my application is called Pages. */
 
@@ -18,6 +19,23 @@ class Pages {
         wxBoxSizer *splitPanel1Sizer;
         wxBoxSizer *splitPanel2Sizer;
         wxBoxSizer *pagesSizer;
+        
+        
+        // left panel
+        
+        
+        
+        
+        
+        
+        
+        
+        // right panel
+        
+        wxRichTextCtrl *richTextCtrl;
+        
+        
+        
     
     public:
         Pages(wxNotebook *notebook);
