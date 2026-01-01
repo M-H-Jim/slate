@@ -26,6 +26,38 @@ Pages::Pages(wxNotebook* notebook) {
     
     // Writing space
     
+    richTextCtrlToolBar = new wxToolBar(
+        splitPanel2,
+        wxID_ANY,
+        wxDefaultPosition,
+        wxDefaultSize,
+        wxTB_HORIZONTAL | wxTB_FLAT
+    );
+    
+    fontPicker = new wxFontPickerCtrl(richTextCtrlToolBar, wxID_ANY,
+                                      wxNullFont,
+                                      wxDefaultPosition,
+                                      wxSize(200, 30),
+                                      wxFNTP_USEFONT_FOR_LABEL | wxFNTP_FONTDESC_AS_LABEL);
+    
+    
+    
+    
+    //------------------------------------------------------------------
+    richTextCtrlToolBar->AddCheckTool(wxID_BOLD, "B", wxBitmap(bold_xpm));
+    richTextCtrlToolBar->AddCheckTool(wxID_ITALIC, "I", wxBitmap(italic_xpm));
+    richTextCtrlToolBar->AddCheckTool(wxID_UNDERLINE, "U", wxBitmap(underline_xpm));
+    richTextCtrlToolBar->AddCheckTool(wxID_STRIKETHROUGH, "S", wxArtProvider::GetBitmap(wxART_DELETE, wxART_TOOLBAR));
+    //------------------------------------------------------------------
+    richTextCtrlToolBar->AddControl(fontPicker);
+    
+    
+    
+    richTextCtrlToolBar->Realize();
+    
+    
+    
+    
     richTextCtrl = new wxRichTextCtrl(
         splitPanel2,
         wxID_ANY,
@@ -44,7 +76,8 @@ Pages::Pages(wxNotebook* notebook) {
     
     
     splitPanel2Sizer = new wxBoxSizer(wxVERTICAL);
-    splitPanel2Sizer->Add(richTextCtrl, 1, wxEXPAND | wxALL, 5);
+    splitPanel2Sizer->Add(richTextCtrlToolBar, 0, wxEXPAND);
+    splitPanel2Sizer->Add(richTextCtrl, 1, wxEXPAND);
     splitPanel2->SetSizer(splitPanel2Sizer);
     
     

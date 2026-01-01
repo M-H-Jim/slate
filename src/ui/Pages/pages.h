@@ -1,11 +1,23 @@
 #ifndef PAGES_H
 #define PAGES_H
 
+//#include "../../../bitmaps"
+#include "bold.xpm"
+#include "italic.xpm"
+#include "underline.xpm"
+
+
 #include <wx/wx.h>
 #include <wx/splitter.h>
 #include <wx/notebook.h>
 #include <wx/sizer.h>
 #include <wx/richtext/richtextctrl.h>
+#include <wx/artprov.h>
+//#include <wx/combobox.h>
+#include <wx/fontpicker.h>
+
+
+
 
 /* This Notes/Summary/Personal knowledge Base in my application is called Pages. */
 
@@ -32,7 +44,15 @@ class Pages {
         
         // right panel
         
+        wxToolBar *richTextCtrlToolBar;
+        wxFontPickerCtrl *fontPicker;
+        
+        
+        
+        
+        
         wxRichTextCtrl *richTextCtrl;
+        
         
         
         
