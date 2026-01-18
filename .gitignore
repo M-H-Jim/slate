@@ -1,0 +1,27 @@
+# Visual Studio cache / user-specific files
+.vs/
+*.user
+*.suo
+
+# Build output folders
+Debug/
+Release/
+x64/
+x86/
+
+# Intermediate build files
+*.obj
+*.pdb
+*.ilk
+*.idb
+*.tlog
+*.log
+
+# Visual C++ generated files
+*.vcxproj.user
+
+# CMake (ignore if not used, harmless otherwise)
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
