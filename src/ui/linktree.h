@@ -9,6 +9,7 @@
 #include <wx/srchctrl.h>
 #include <wx/artprov.h>
 
+#include "class/treeCtrl.h"
 
 class LinkTree {
 		wxPanel	*linkTreePanel;
@@ -25,7 +26,9 @@ class LinkTree {
 		wxSearchCtrl *searchCtrl;
 		wxToolBar *linkTreeToolBar;
 		wxBoxSizer *linkTreeToolBarSizer;
-		wxTreeCtrl *linkTreeCtrl;
+		TreeCtrl *linkTree;
+
+		wxTreeCtrl *tree;
 
 		// Right Side
 		wxWebView *webView;
@@ -35,6 +38,8 @@ class LinkTree {
 		LinkTree(wxNotebook* notebook);
 		wxPanel *GetPanel();
 
-
+		void OnTreeSelectionChanged(wxTreeEvent& evt);
+		void OnSearch(wxCommandEvent& evt);
+		wxTreeItemId FindItemByText(const wxTreeItemId& parent, const wxString& text);
 
 };

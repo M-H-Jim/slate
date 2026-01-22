@@ -32,6 +32,7 @@ class TreeCtrl {
 		void OnAddSubTopicFromToolBar(wxCommandEvent& evt);
 		void OnEditLink(wxCommandEvent& evt);
 		void OnDeleteNode(wxCommandEvent& evt);
+		void OnEditNode(wxCommandEvent& evt);
 
 		void OnBeginDrag(wxTreeEvent& evt);
 		void OnEndDrag(wxTreeEvent& evt);

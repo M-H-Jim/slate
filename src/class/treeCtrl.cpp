@@ -6,7 +6,7 @@ TreeCtrl::TreeCtrl(wxPanel* panel) {
 		wxID_ANY,
 		wxDefaultPosition,
 		wxDefaultSize,
-		wxTR_HIDE_ROOT | wxTR_LINES_AT_ROOT | wxTR_EDIT_LABELS | wxTR_HAS_BUTTONS
+		wxTR_HIDE_ROOT | wxTR_LINES_AT_ROOT | wxTR_EDIT_LABELS | wxTR_HAS_BUTTONS | wxBORDER_NONE
 		);
 	hiddenRoot = tree->AddRoot("Root");
 	tree->AppendItem(hiddenRoot, "c language");
@@ -18,6 +18,7 @@ TreeCtrl::TreeCtrl(wxPanel* panel) {
 	tree->Bind(wxEVT_MENU, &TreeCtrl::OnAddSubTopic, this, ID_ADDSUBTOPIC);
 	tree->Bind(wxEVT_MENU, &TreeCtrl::OnEditLink, this, ID_EDIT_LINK);
 	tree->Bind(wxEVT_MENU, &TreeCtrl::OnDeleteNode, this, ID_DELETENODE);
+	tree->Bind(wxEVT_MENU, &TreeCtrl::OnEditNode, this, wxID_EDIT);
 
 	tree->Bind(wxEVT_TREE_ITEM_MENU, &TreeCtrl::OnTreeRightClick, this);
 	tree->Bind(wxEVT_LEFT_DOWN, &TreeCtrl::OnTreeLeftClick, this);
@@ -47,6 +48,7 @@ void TreeCtrl::OnTreeRightClick(wxTreeEvent& evt) {
 
 	wxMenu menu;
 
+	menu.Append(wxID_EDIT, "Rename Topic");
 	menu.Append(ID_EDIT_LINK, "Edit Link");
 	menu.Append(ID_ADDSUBTOPIC, "Add New Sub-Topic");
 	menu.Append(ID_ADDTOPIC, "Add New Topic");
@@ -158,6 +160,17 @@ void TreeCtrl::OnDeleteNode(wxCommandEvent& evt) {
 	tree->UnselectAll();
 	rightClickedItem = wxTreeItemId();
 }
+
+void TreeCtrl::OnEditNode(wxCommandEvent& evt) {
+	wxTreeItemId selected = tree->GetSelection();
+	if (!selected.IsOk() || selected == hiddenRoot) {
+		wxMessageBox("Please select a topic to edit");
+		return;
+	}
+	tree->EditLabel(selected);
+}
+
+
 
 
 
