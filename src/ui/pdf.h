@@ -16,11 +16,14 @@
 #include "PDFView.h"
 #include "PDFViewBookmarksCtrl.h"
 #include "PDFViewThumbnailListBox.h"
+#include "class/treeCtrl.h"
 
 class PDF {
-	wxSplitterWindow* splitterWindow;
+	wxSplitterWindow *splitterWindow;
+	wxSplitterWindow *outerSplitterWindow;
 
 	wxPanel *pdfPanel;
+	wxPanel	*leftPanel;
 	wxPanel *bookmarksPanel;
 	wxPanel *thumbnailsPanel;
 	wxPanel *pdfViewerPanel;
@@ -31,6 +34,19 @@ class PDF {
 	wxBoxSizer *bookmarksSizer;
 	wxBoxSizer *thumbnailsSizer;
 	wxBoxSizer *pdfViewerSizer;
+	wxStaticBoxSizer *booklistBoxSizer;
+	wxBoxSizer *booklistTreeToolBarSizer;
+	wxBoxSizer *leftPanelSizer;
+
+	wxSearchCtrl *searchCtrl;
+
+	wxToolBar *booklistToolBar;
+
+	wxStaticBox	*booklistBox;
+
+	TreeCtrl *booklistTree;
+
+
 
 
 	wxPDFView *pdfView;
@@ -41,5 +57,7 @@ class PDF {
 	public:
 		PDF(wxNotebook *notebook);
 		wxPanel *GetPanel();
+
+		void OnTreeSelectionChanged(wxTreeEvent& evt);
 };
 

@@ -10,7 +10,7 @@ bool App::OnInit() {
 	wxImage::AddHandler(new wxPNGHandler);
 
 	MainFrame* mainFrame = new MainFrame("slate");
-	mainFrame->SetClientSize(800, 600);
+	mainFrame->SetClientSize(1500, 800);
 	mainFrame->Center();
 	mainFrame->Show();
 

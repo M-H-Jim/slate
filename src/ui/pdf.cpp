@@ -1,5 +1,4 @@
 #include "pdf.h"
-#include "class/treeCtrl.h"
 
 
 
@@ -11,7 +10,7 @@ PDF::PDF(wxNotebook* notebook) {
 	thumbnailsSizer = new wxBoxSizer(wxVERTICAL);
 	pdfViewerSizer = new wxBoxSizer(wxVERTICAL);
 
-	wxSplitterWindow* outerSplitterWindow = new wxSplitterWindow(pdfPanel, wxID_ANY);
+	outerSplitterWindow = new wxSplitterWindow(pdfPanel, wxID_ANY);
 	outerSplitterWindow->SetMinimumPaneSize(250);
 
 	splitterWindow = new wxSplitterWindow(outerSplitterWindow, wxID_ANY);
@@ -20,12 +19,17 @@ PDF::PDF(wxNotebook* notebook) {
 	thumbnailsPanel = new wxPanel(splitterWindow, wxID_ANY);
 	pdfViewerPanel = new wxPanel(splitterWindow, wxID_ANY);
 	
-	pdfView = new wxPDFView(pdfViewerPanel, wxID_ANY);
+
+
+	pdfView = new wxPDFView(pdfViewerPanel, wxID_ANY); 	
 	bookmarks = new wxPDFViewBookmarksCtrl(bookmarksPanel, wxID_ANY);
 	thumbnails = new wxPDFViewThumbnailListBox(thumbnailsPanel, wxID_ANY);
 	bookmarks->SetPDFView(pdfView);
 	thumbnails->SetPDFView(pdfView);
-		
+	
+	// temporary hardcoded PDF file path
+	pdfView->LoadFile("D:\\Books\\progit.pdf");
+
 
 	bookmarksPanel->SetSizer(bookmarksSizer);
 	thumbnailsPanel->SetSizer(thumbnailsSizer);
@@ -35,6 +39,36 @@ PDF::PDF(wxNotebook* notebook) {
 	thumbnailsSizer->Add(thumbnails, 1, wxEXPAND);
 	pdfViewerSizer->Add(pdfView, 1, wxEXPAND);
 
+	wxToolBar *pdfViewToolBar = new wxToolBar(
+		pdfViewerPanel,
+		wxID_ANY,
+		wxDefaultPosition,
+		wxDefaultSize,
+		wxTB_HORIZONTAL | wxTB_TEXT | wxNO_BORDER
+	);
+
+	pdfViewToolBar->AddTool(wxID_BACKWARD, "", wxArtProvider::GetBitmap(wxART_GO_BACK, wxART_TOOLBAR), "Show previous page");
+	pdfViewToolBar->AddTool(wxID_FORWARD, "", wxArtProvider::GetBitmap(wxART_GO_FORWARD, wxART_TOOLBAR), "Show next Page");
+	pdfViewToolBar->AddTool(wxID_FIRST, "", wxArtProvider::GetBitmap(wxART_GOTO_FIRST, wxART_TOOLBAR), "Show first page");
+	pdfViewToolBar->AddTool(wxID_LAST, "", wxArtProvider::GetBitmap(wxART_GOTO_LAST, wxART_TOOLBAR), "Show last page");
+
+
+
+	wxStaticText* pageCountLabel = new wxStaticText(pdfViewToolBar, wxID_ANY, wxString::Format(" / %d", pdfView->GetPageCount()));
+	pdfViewToolBar->AddControl(pageCountLabel);
+
+
+
+	pdfViewToolBar->Realize();
+
+	wxBoxSizer* pdfViewToolBarSizer = new wxBoxSizer(wxVERTICAL);
+	pdfViewToolBarSizer->Add(pdfViewToolBar, 0, wxEXPAND);
+	pdfViewToolBarSizer->Add(pdfView, 1, wxEXPAND);
+	pdfViewerPanel->SetSizer(pdfViewToolBarSizer);
+
+
+
+
 
 	bookmarkThumbnailNotebook = new wxNotebook(splitterWindow, wxID_ANY);
 	bookmarkThumbnailNotebook->AddPage(bookmarksPanel, "Bookmarks");
@@ -42,14 +76,31 @@ PDF::PDF(wxNotebook* notebook) {
 
 
 
-	splitterWindow->SplitVertically(bookmarkThumbnailNotebook, pdfViewerPanel);
+	splitterWindow->SplitVertically(bookmarkThumbnailNotebook, pdfViewerPanel, 200);
+
+
+
+	pdfViewToolBar->Bind(wxEVT_TOOL, [=](wxCommandEvent&) {
+		pdfView->NavigateToPage(wxPDFVIEW_PAGE_NAV_PREV);
+		}, wxID_BACKWARD);
+
+	pdfViewToolBar->Bind(wxEVT_TOOL, [=](wxCommandEvent&) {
+		pdfView->NavigateToPage(wxPDFVIEW_PAGE_NAV_NEXT);
+		}, wxID_FORWARD);
+	pdfViewToolBar->Bind(wxEVT_TOOL, [=](wxCommandEvent&) {
+		pdfView->NavigateToPage(wxPDFVIEW_PAGE_NAV_FIRST);
+		}, wxID_FIRST);
+	pdfViewToolBar->Bind(wxEVT_TOOL, [=](wxCommandEvent&) {
+		pdfView->NavigateToPage(wxPDFVIEW_PAGE_NAV_LAST);
+		}, wxID_LAST);
+
 
 	//------------------------------------------------------
 	// experimental
 
-	wxPanel* leftPanel = new wxPanel(outerSplitterWindow, wxID_ANY);
+	leftPanel = new wxPanel(outerSplitterWindow, wxID_ANY);
 
-	wxSearchCtrl* searchCtrl = new wxSearchCtrl(
+	searchCtrl = new wxSearchCtrl(
 		leftPanel,
 		wxID_ANY,
 		"",
@@ -61,7 +112,7 @@ PDF::PDF(wxNotebook* notebook) {
 	searchCtrl->ShowCancelButton(true);
 
 	// bind this search
-	wxToolBar* booklistToolBar = new wxToolBar(
+	booklistToolBar = new wxToolBar(
 		leftPanel,
 		wxID_ANY,
 		wxDefaultPosition,
@@ -70,24 +121,35 @@ PDF::PDF(wxNotebook* notebook) {
 	);
 
 	booklistToolBar->AddTool(wxID_ADD, "", wxArtProvider::GetBitmap(wxART_PLUS, wxART_TOOLBAR), "Add a new topic");
-
+	booklistToolBar->AddTool(wxID_NEW, "", wxArtProvider::GetBitmap(wxART_ADD_BOOKMARK, wxART_TOOLBAR), "Add a new sub-topic");
+	booklistToolBar->AddTool(wxID_EDIT, "", wxArtProvider::GetBitmap(wxART_EDIT, wxART_TOOLBAR), "Edit");
+	booklistToolBar->AddSeparator();
+	booklistToolBar->AddTool(wxID_DELETE, "", wxArtProvider::GetBitmap(wxART_DELETE, wxART_TOOLBAR), "Delete this topic");
 
 	booklistToolBar->Realize();
 
-	wxStaticBox* booklistBox = new wxStaticBox(leftPanel, wxID_ANY, "Book List");
-	wxStaticBoxSizer* booklistBoxSizer = new wxStaticBoxSizer(booklistBox, wxVERTICAL);
-	TreeCtrl* booklistTree = new TreeCtrl(leftPanel);
-	wxTreeCtrl* tree = booklistTree->GetTree();
+	booklistBox = new wxStaticBox(leftPanel, wxID_ANY, "Book List");
+	booklistBoxSizer = new wxStaticBoxSizer(booklistBox, wxVERTICAL);
+	booklistTree = new TreeCtrl(leftPanel);
 	booklistBoxSizer->Add(booklistTree->GetTree(), 1, wxEXPAND | wxALL, 5);
+
+	booklistTree->GetTree()->Bind(wxEVT_TREE_SEL_CHANGED, &PDF::OnTreeSelectionChanged, this);
+
+
+	booklistToolBar->Bind(wxEVT_TOOL, &TreeCtrl::OnAddPDF, booklistTree, wxID_ADD);
+	booklistToolBar->Bind(wxEVT_TOOL, &TreeCtrl::OnAddSubPDF, booklistTree, wxID_NEW);
+	booklistToolBar->Bind(wxEVT_TOOL, &TreeCtrl::OnEditNode, booklistTree, wxID_EDIT);
+	booklistToolBar->Bind(wxEVT_TOOL, &TreeCtrl::OnDeleteNode, booklistTree, wxID_DELETE);
 
 	// Bind this 
 
-	wxBoxSizer* booklistTreeToolBarSizer = new wxBoxSizer(wxHORIZONTAL);
+
+	booklistTreeToolBarSizer = new wxBoxSizer(wxHORIZONTAL);
 	booklistTreeToolBarSizer->Add(booklistToolBar, 0, wxEXPAND);
 	booklistTreeToolBarSizer->Add(booklistBoxSizer, 1, wxEXPAND | wxLEFT | wxRIGHT, 5);
 
 
-	wxBoxSizer* leftPanelSizer = new wxBoxSizer(wxVERTICAL);
+	leftPanelSizer = new wxBoxSizer(wxVERTICAL);
 	leftPanelSizer->Add(searchCtrl, 0, wxEXPAND, 5);
 	leftPanelSizer->Add(booklistTreeToolBarSizer, 1, wxEXPAND, 5);
 	leftPanel->SetSizer(leftPanelSizer);
@@ -98,32 +160,11 @@ PDF::PDF(wxNotebook* notebook) {
 	//------------------------------------------------------
 
 
-	//wxPanel* booklistPanel = new wxPanel(outerSplitterWindow, wxID_ANY);
-	//wxBoxSizer* booklistSizer = new wxBoxSizer(wxHORIZONTAL);
-
-	//TreeCtrl *booklistTree = new TreeCtrl(booklistPanel);
-	//booklistSizer->Add(booklistTree->GetTree(), 1, wxEXPAND);
-
-	//booklistPanel->SetSizer(booklistSizer);
-
-
-	//------------------------------------------------------
-
-
-	//outerSplitterWindow->SplitVertically(booklistPanel, splitterWindow, 200);
-
-
 	outerSplitterWindow->SplitVertically(leftPanel, splitterWindow, 200);
 
-
-
-
-
-	//sizer->Add(randomPanel, 1, wxEXPAND);
-	//sizer->Add(splitterWindow, 1, wxEXPAND);
 	sizer->Add(outerSplitterWindow, 1, wxEXPAND);
 
-	pdfView->LoadFile("D:\\Books\\progit.pdf");
+
 	pdfPanel->SetSizer(sizer);
 
 }
@@ -136,3 +177,19 @@ wxPanel* PDF::GetPanel() {
 	return pdfPanel;
 }
 
+void PDF::OnTreeSelectionChanged(wxTreeEvent& evt) {
+	wxTreeItemId item = evt.GetItem();
+	if (!item.IsOk()) {
+		return;
+	}
+
+	NodeData* data = dynamic_cast<NodeData*>(booklistTree->GetTree()->GetItemData(item));
+
+	if (!data) {
+		wxMessageBox("No data associated with this item.");
+		return;
+	}
+
+	pdfView->LoadFile(data->url);
+
+}

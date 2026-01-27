@@ -16,6 +16,8 @@ TreeCtrl::TreeCtrl(wxPanel* panel) {
 
 	tree->Bind(wxEVT_MENU, &TreeCtrl::OnAddTopic, this, ID_ADDTOPIC);
 	tree->Bind(wxEVT_MENU, &TreeCtrl::OnAddSubTopic, this, ID_ADDSUBTOPIC);
+	tree->Bind(wxEVT_MENU, &TreeCtrl::OnAddPDF, this, ID_ADDPDF);
+	tree->Bind(wxEVT_MENU, &TreeCtrl::OnAddSubPDF, this, ID_ADDSUBPDF);
 	tree->Bind(wxEVT_MENU, &TreeCtrl::OnEditLink, this, ID_EDIT_LINK);
 	tree->Bind(wxEVT_MENU, &TreeCtrl::OnDeleteNode, this, ID_DELETENODE);
 	tree->Bind(wxEVT_MENU, &TreeCtrl::OnEditNode, this, wxID_EDIT);
@@ -35,7 +37,7 @@ wxTreeCtrl* TreeCtrl::GetTree() const{
 void TreeCtrl::OnAddTopic(wxCommandEvent& evt) {
 	static int topicCounter = 1;
 	wxString topicName = wxString::Format("Topic %d", topicCounter++);
-	wxTreeItemId newTopic = tree->AppendItem(hiddenRoot, topicName, -1, -1, new NodeData("https://example.com"));
+	wxTreeItemId newTopic = tree->AppendItem(hiddenRoot, topicName, -1, -1, new NodeData(NodeType::TOPIC, "https://example.com"));
 	tree->EditLabel(newTopic);
 
 	tree->SelectItem(newTopic);
@@ -46,12 +48,26 @@ void TreeCtrl::OnAddTopic(wxCommandEvent& evt) {
 void TreeCtrl::OnTreeRightClick(wxTreeEvent& evt) {
 	rightClickedItem = evt.GetItem();
 
+	NodeData *data = dynamic_cast<NodeData*>(tree->GetItemData(rightClickedItem));
+
+
+
 	wxMenu menu;
 
-	menu.Append(wxID_EDIT, "Rename Topic");
-	menu.Append(ID_EDIT_LINK, "Edit Link");
-	menu.Append(ID_ADDSUBTOPIC, "Add New Sub-Topic");
-	menu.Append(ID_ADDTOPIC, "Add New Topic");
+
+	if (data && data->type == NodeType::TOPIC) {
+		menu.Append(wxID_EDIT, "Rename Topic");
+		menu.Append(ID_EDIT_LINK, "Edit Link");
+		menu.Append(ID_ADDSUBTOPIC, "Add New Sub-Topic");
+		menu.Append(ID_ADDTOPIC, "Add New Topic");
+	}
+	else {
+		menu.Append(wxID_EDIT, "Rename PDF");
+		menu.Append(ID_EDIT_LINK, "Edit Path");
+		menu.Append(ID_ADDPDF, "Add new PDF");
+		menu.Append(ID_ADDSUBPDF, "Add new Sub-PDF");
+	}
+	
 	menu.AppendSeparator();
 	menu.Append(ID_DELETENODE, "Delete");
 
@@ -71,17 +87,17 @@ void TreeCtrl::OnTreeLeftClick(wxMouseEvent& evt) {
 
 void TreeCtrl::OnAddSubTopic(wxCommandEvent& evt) {
 
-	    wxTreeItemId selected = tree->GetSelection();
+	wxTreeItemId selected = tree->GetSelection();
 	    
-	    if(!selected.IsOk() || selected == hiddenRoot) {
-	        wxMessageBox("Please select a topic to add a link under it");
-	        return;
-	    }
+	if(!selected.IsOk() || selected == hiddenRoot) {
+	    wxMessageBox("Please select a topic to add a link under it");
+	    return;
+	}
 
 
 	static int subTopicCounter = 1;
 	wxString subTopicName = wxString::Format("SubTopic %d", subTopicCounter++);
-	wxTreeItemId newSubTopic = tree->AppendItem(rightClickedItem, subTopicName, -1, -1, new NodeData("https://example.com"));
+	wxTreeItemId newSubTopic = tree->AppendItem(rightClickedItem, subTopicName, -1, -1, new NodeData(NodeType::TOPIC, "https://example.com"));
 
 	//tree->EditLabel(newSubTopic);
 
@@ -100,7 +116,7 @@ void TreeCtrl::OnAddSubTopicFromToolBar(wxCommandEvent& evt) {
 	static int subTopicCounter = 1;
 	wxString subTopicName = wxString::Format("SubTopic %d", subTopicCounter++);
 
-	wxTreeItemId newSubTopic = tree->AppendItem(selected, subTopicName, -1, -1, new NodeData("https://exmaple.com"));
+	wxTreeItemId newSubTopic = tree->AppendItem(selected, subTopicName, -1, -1, new NodeData(NodeType::TOPIC, "https://exmaple.com"));
 
 	//tree->EditLabel(newSubTopic);
 
@@ -171,6 +187,55 @@ void TreeCtrl::OnEditNode(wxCommandEvent& evt) {
 }
 
 
+
+void TreeCtrl::OnAddPDF(wxCommandEvent& evt) {
+	wxFileDialog dlg(
+		tree,
+		"Select PDF File",
+		"",
+		"",
+		"PDF files (*.pdf)|*.pdf",
+		wxFD_OPEN | wxFD_FILE_MUST_EXIST
+	);
+	if (dlg.ShowModal() != wxID_OK) {
+		return;
+	}
+	wxString pdfPath = dlg.GetPath();
+	wxString pdfName = wxFileName(pdfPath).GetFullName();
+
+	wxTreeItemId item = tree->AppendItem(hiddenRoot, pdfName, -1, -1, new NodeData(NodeType::PDF, pdfPath));
+	tree->SelectItem(item);
+	tree->EnsureVisible(item);
+}
+
+void TreeCtrl::OnAddSubPDF(wxCommandEvent& evt) {
+	wxFileDialog dlg(
+		tree,
+		"Select PDF File",
+		"",
+		"",
+		"PDF files (*.pdf)|*.pdf",
+		wxFD_OPEN | wxFD_FILE_MUST_EXIST
+	);
+	if (dlg.ShowModal() != wxID_OK) {
+		return;
+	}
+	wxString pdfPath = dlg.GetPath();
+	wxString pdfName = wxFileName(pdfPath).GetFullName();
+
+	wxTreeItemId selected = tree->GetSelection();
+
+	if (!selected.IsOk() || selected == hiddenRoot) {
+		wxMessageBox("Please select a topic to add a link under it");
+		return;
+	}
+
+	wxTreeItemId item = tree->AppendItem(selected, pdfName, -1, -1, new NodeData(NodeType::PDF, pdfPath));
+
+
+	tree->SelectItem(item);
+	tree->EnsureVisible(item);
+}
 
 
 

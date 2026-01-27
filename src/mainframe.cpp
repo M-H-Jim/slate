@@ -8,12 +8,12 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 	panel = new wxPanel(this, wxID_ANY);
 	notebook = new wxNotebook(panel, wxID_ANY);
 
-	LinkTree *linkTree = new LinkTree(notebook);
-	notebook->AddPage(linkTree->GetPanel(), "Links");
 
 	PDF *pdf = new PDF(notebook);
 	notebook->AddPage(pdf->GetPanel(), "PDF Viewer");
 
+	LinkTree *linkTree = new LinkTree(notebook);
+	notebook->AddPage(linkTree->GetPanel(), "Links");
 
 	panelSizer = new wxBoxSizer(wxHORIZONTAL);
 	panelSizer->Add(notebook, 1, wxEXPAND);
