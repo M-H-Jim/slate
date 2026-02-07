@@ -8,6 +8,8 @@
 #include <wx/treectrl.h>
 #include <wx/srchctrl.h>
 #include <wx/artprov.h>
+#include <wx/stdpaths.h>
+#include <wx/filename.h>
 
 #include "class/treeCtrl.h"
 
@@ -41,5 +43,10 @@ class LinkTree {
 		void OnTreeSelectionChanged(wxTreeEvent& evt);
 		void OnSearch(wxCommandEvent& evt);
 		wxTreeItemId FindItemByText(const wxTreeItemId& parent, const wxString& text);
-
+		wxTreeCtrl* GetTree() {
+			return tree;
+		}
+		TreeCtrl* GetTreeCtrl() {
+			return linkTree;
+		}
 };

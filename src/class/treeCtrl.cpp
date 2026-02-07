@@ -9,7 +9,6 @@ TreeCtrl::TreeCtrl(wxPanel* panel) {
 		wxTR_HIDE_ROOT | wxTR_LINES_AT_ROOT | wxTR_EDIT_LABELS | wxTR_HAS_BUTTONS | wxBORDER_NONE
 		);
 	hiddenRoot = tree->AddRoot("Root");
-	tree->AppendItem(hiddenRoot, "c language");
 	//tree->AppendItem(hiddenRoot, "C language");
 	//tree->AppendItem(hiddenRoot, "C language");
 	//tree->AppendItem(hiddenRoot, "C language");

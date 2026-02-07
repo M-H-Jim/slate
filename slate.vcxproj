@@ -116,7 +116,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(WXWIN)\include\msvc;$(WXWIN)\include;$(ProjectDir)src;E:\wxPDFView-1.0\include;E:\pdfium\include</AdditionalIncludeDirectories>
     </ClCompile>
@@ -130,7 +130,9 @@
   <ItemGroup>
     <ClCompile Include="src\app.cpp" />
     <ClCompile Include="src\class\treeCtrl.cpp" />
+    <ClCompile Include="src\db\database.cpp" />
     <ClCompile Include="src\mainframe.cpp" />
+    <ClCompile Include="src\sqlite3.c" />
     <ClCompile Include="src\ui\linktree.cpp" />
     <ClCompile Include="src\ui\notes.cpp" />
     <ClCompile Include="src\ui\pdf.cpp" />
@@ -138,7 +140,10 @@
   <ItemGroup>
     <ClInclude Include="src\app.h" />
     <ClInclude Include="src\class\treeCtrl.h" />
+    <ClInclude Include="src\db\database.h" />
     <ClInclude Include="src\mainframe.h" />
+    <ClInclude Include="src\sqlite3.h" />
+    <ClInclude Include="src\sqlite3ext.h" />
     <ClInclude Include="src\ui\linktree.h" />
     <ClInclude Include="src\ui\notes.h" />
     <ClInclude Include="src\ui\pdf.h" />

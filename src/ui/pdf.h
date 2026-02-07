@@ -1,6 +1,7 @@
 #pragma once
 
 #include <wx/wx.h>
+#include <wx/tglbtn.h>
 #include <wx/sharedptr.h>
 #include <wx/webview.h>
 #include <wx/notebook.h>
@@ -16,7 +17,16 @@
 #include "PDFView.h"
 #include "PDFViewBookmarksCtrl.h"
 #include "PDFViewThumbnailListBox.h"
+#include "PDFViewArtProvider.h"
 #include "class/treeCtrl.h"
+
+enum {
+	ID_ROTATION = wxID_HIGHEST + 100,
+	ID_TOGGLE,
+	ID_GOTO_PAGE
+};
+
+
 
 class PDF {
 	wxSplitterWindow *splitterWindow;
@@ -52,12 +62,33 @@ class PDF {
 	wxPDFView *pdfView;
 	wxPDFViewBookmarksCtrl* bookmarks;
 	wxPDFViewThumbnailListBox* thumbnails;
-	
+
+	wxTextCtrl *gotoPageTextCtrl;
+	wxStaticText *pageCountLabel;
+
+
+
+	NodeData* data;
+
+
 
 	public:
 		PDF(wxNotebook *notebook);
 		wxPanel *GetPanel();
 
+		void OnSearch(wxCommandEvent& evt);
+		wxTreeItemId FindItemByText(const wxTreeItemId& parent, const wxString& text);
+
+
 		void OnTreeSelectionChanged(wxTreeEvent& evt);
+		void OnRotation(wxCommandEvent& evt);
+
+		wxTreeCtrl* GetTree() {
+			return booklistTree->GetTree();
+		}
+		TreeCtrl* GetTreeCtrl() {
+			return booklistTree;
+		}
+
 };
 

@@ -25,3 +25,8 @@ CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
 Makefile
+
+# sqlite3
+src/sqlite3.c
+src/sqlite3.h
+src/sqlite3ext.h

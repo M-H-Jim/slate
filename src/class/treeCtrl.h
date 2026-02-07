@@ -37,6 +37,7 @@ class TreeCtrl {
 	public:
 		TreeCtrl(wxPanel* panel);
 		wxTreeCtrl* GetTree() const;
+		wxTreeItemId GetHiddenRoot() const { return hiddenRoot; }
 		void OnAddTopic(wxCommandEvent& evet);
 		void OnAddSubTopic(wxCommandEvent& evt);
 		void OnAddSubTopicFromToolBar(wxCommandEvent& evt);

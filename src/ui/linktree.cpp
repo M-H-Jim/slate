@@ -89,6 +89,8 @@ LinkTree::LinkTree(wxNotebook* notebook) {
 		wxTB_HORIZONTAL | wxTB_FLAT
 	);
 
+
+	webViewToolBar->AddTool(wxID_HOME, "", wxArtProvider::GetBitmap(wxART_GO_HOME, wxART_TOOLBAR), "Home");
 	webViewToolBar->AddTool(wxID_BACKWARD, "", wxArtProvider::GetBitmap(wxART_GO_BACK, wxART_TOOLBAR), "Back");
 	webViewToolBar->AddTool(wxID_FORWARD, "", wxArtProvider::GetBitmap(wxART_GO_FORWARD, wxART_TOOLBAR), "Forward");
 	webViewToolBar->AddTool(wxID_REFRESH, "", wxArtProvider::GetBitmap(wxART_REFRESH, wxART_TOOLBAR), "Reload");
@@ -97,30 +99,54 @@ LinkTree::LinkTree(wxNotebook* notebook) {
 
 	webViewToolBar->Realize();
 
+	webViewToolBar->Bind(wxEVT_TOOL, [=](wxCommandEvent&) {
+		wxString exePath = wxStandardPaths::Get().GetExecutablePath();
+		wxFileName exeFile(exePath);
+		wxString exeDir = exeFile.GetPath();
+
+		wxString htmlFilePath = exeDir + "\\index.html";
+		wxString localFileURL = "file:///" + htmlFilePath;
+		webView->LoadURL(localFileURL);
+		}, wxID_HOME);
 
 	webViewToolBar->Bind(wxEVT_TOOL, [=](wxCommandEvent&) {
-		webView->GoBack();
-		}, wxID_BACKWARD);
+		if (webView->CanGoBack()) {
+			webView->GoBack();
+		}
+		else {
+			wxLogWarning("No previous page in history.");
+		}
+	}, wxID_BACKWARD);
 
 	webViewToolBar->Bind(wxEVT_TOOL, [=](wxCommandEvent&) {
-		webView->GoForward();
-		}, wxID_FORWARD);
+		if (webView->CanGoForward()) {
+			webView->GoForward();
+		}
+		else {
+			wxLogWarning("No next page in history.");
+		}
+	}, wxID_FORWARD);
 
 	webViewToolBar->Bind(wxEVT_TOOL, [=](wxCommandEvent&) {
 		webView->Reload();
-		}, wxID_REFRESH);
+	}, wxID_REFRESH);
 
 	webViewToolBar->Bind(wxEVT_TOOL, [=](wxCommandEvent&) {
 		webView->Stop();
-		}, wxID_STOP);
+	}, wxID_STOP);
 
 
 
 
 
+	wxString exePath = wxStandardPaths::Get().GetExecutablePath();
+	wxFileName exeFile(exePath);
+	wxString exeDir = exeFile.GetPath();
 
+	wxString htmlFilePath = exeDir + "\\index.html";
+	wxString localFileURL = "file:///" + htmlFilePath;
 
-	webView = wxWebView::New(splitPanelRight, wxID_ANY, "https://www.duckduckgo.com");
+	webView = wxWebView::New(splitPanelRight, wxID_ANY, localFileURL);
 
 	splitPanelRightSizer = new wxBoxSizer(wxVERTICAL);
 	splitPanelRightSizer->Add(webViewToolBar, 0, wxEXPAND);
@@ -132,7 +158,7 @@ LinkTree::LinkTree(wxNotebook* notebook) {
 	linkTreeSizer = new wxBoxSizer(wxHORIZONTAL);
 	linkTreeSizer->Add(splitterWindow, 1, wxEXPAND);
 	linkTreePanel->SetSizer(linkTreeSizer);
-
+	
 
 }
 
