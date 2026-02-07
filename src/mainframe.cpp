@@ -98,6 +98,8 @@ void MainFrame::OnAbout(wxCommandEvent& evt) {
 		"Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 	);
 
+	aboutInfo.SetWebSite("www.github.com/M-H-Jim/Slate", "GitHub Repository");
+
 	aboutInfo.SetVersion("0.0.1");
 	wxAboutBox(aboutInfo);
 

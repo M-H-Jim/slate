@@ -27,8 +27,6 @@ PDF::PDF(wxNotebook* notebook) {
 	bookmarks->SetPDFView(pdfView);
 	thumbnails->SetPDFView(pdfView);
 	
-	// temporary hardcoded PDF file path
-	pdfView->LoadFile("D:\\Books\\progit.pdf");
 
 	bookmarksPanel->SetSizer(bookmarksSizer);
 	thumbnailsPanel->SetSizer(thumbnailsSizer);
