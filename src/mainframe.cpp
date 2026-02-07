@@ -2,6 +2,9 @@
 
 MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
 
+	wxIcon appIcon;
+	appIcon.LoadFile("slate.png", wxBITMAP_TYPE_PNG);
+	SetIcon(appIcon);
 
 
 	wxMenu *menuHelp = new wxMenu;

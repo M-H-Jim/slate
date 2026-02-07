@@ -6,7 +6,7 @@ wxIMPLEMENT_APP(App);
 
 bool App::OnInit() {
 
-
+	wxInitAllImageHandlers();
 
 	SetAppearance(Appearance::System);
 
